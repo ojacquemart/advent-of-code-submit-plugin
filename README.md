@@ -18,9 +18,15 @@ Whether you're a competitive solver or just enjoying the holiday coding fun, thi
 
 ## 📝 TODO list
 
-- [ ] View the Advent of code puzzles
+- [x] View the Advent of code puzzles
 - [ ] Submit your answers directly to Advent of Code
 - [ ] Download the inputs
+
+## 👏 Kudos
+
+Special kudos to this repo: [Advent Of Code](https://github.com/UnderKoen/AdventOfCodePlugin).
+It helped me a lot to build the basis of this plugin.
+The complete tree view of the puzzles is based on its work.
 
 ## Installation
 

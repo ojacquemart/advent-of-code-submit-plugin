@@ -1,15 +1,17 @@
-package com.github.ojacquemart.adventofcodesubmitplugin
+package com.github.ojacquemart.adventofcode.plugin
 
+import com.github.ojacquemart.adventofcode.plugin.data.CalendarDataProvider
 import com.intellij.ide.highlighter.XmlFileType
-import com.intellij.openapi.components.service
 import com.intellij.psi.xml.XmlFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.PsiErrorElementUtil
-import com.github.ojacquemart.adventofcodesubmitplugin.services.MyProjectService
+import java.time.Year
 
 @TestDataPath("\$CONTENT_ROOT/src/test/testData")
-class MyPluginTest : BasePlatformTestCase() {
+class AocTests : BasePlatformTestCase() {
+
+    // TODO: clean up the tests
 
     fun testXMLFile() {
         val psiFile = myFixture.configureByText(XmlFileType.INSTANCE, "<foo>bar</foo>")
@@ -29,10 +31,12 @@ class MyPluginTest : BasePlatformTestCase() {
         myFixture.testRename("foo.xml", "foo_after.xml", "a2")
     }
 
-    fun testProjectService() {
-        val projectService = project.service<MyProjectService>()
+    fun testCalendarServiceGetYears() {
+        val years = CalendarDataProvider.getYears()
 
-        assertNotSame(projectService.getRandomNumber(), projectService.getRandomNumber())
+        val currentYear = Year.now().value
+        assertEquals(currentYear, years.first().year)
+        assertEquals(2015, years.last().year)
     }
 
     override fun getTestDataPath() = "src/test/testData/rename"

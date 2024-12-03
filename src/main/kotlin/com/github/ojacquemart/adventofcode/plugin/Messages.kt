@@ -1,13 +1,15 @@
-package com.github.ojacquemart.adventofcodesubmitplugin
+package com.github.ojacquemart.adventofcode.plugin
 
 import com.intellij.DynamicBundle
 import org.jetbrains.annotations.NonNls
 import org.jetbrains.annotations.PropertyKey
 
 @NonNls
-private const val BUNDLE = "messages.MyBundle"
+private const val BUNDLE = "messages.aoc"
 
-object MyBundle : DynamicBundle(BUNDLE) {
+// TODO: is it needed?
+
+object Messages : DynamicBundle(BUNDLE) {
 
     @JvmStatic
     fun message(@PropertyKey(resourceBundle = BUNDLE) key: String, vararg params: Any) =
@@ -17,4 +19,5 @@ object MyBundle : DynamicBundle(BUNDLE) {
     @JvmStatic
     fun messagePointer(@PropertyKey(resourceBundle = BUNDLE) key: String, vararg params: Any) =
         getLazyMessage(key, *params)
+    
 }
