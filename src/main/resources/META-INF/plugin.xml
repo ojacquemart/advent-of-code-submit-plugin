@@ -1,18 +1,30 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <id>com.github.ojacquemart.adventofcodesubmitplugin</id>
-    <name>advent-of-code-submit-plugin</name>
-    <vendor>ojacquemart</vendor>
+    <name>Advent-of-Code-Submit</name>
+    <vendor>Olivier Jacquemart</vendor>
 
     <depends>com.intellij.modules.platform</depends>
 
-    <resource-bundle>messages.MyBundle</resource-bundle>
-
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.github.ojacquemart.adventofcodesubmitplugin.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
+        <toolWindow
+            secondary="true"
+            factoryClass="com.github.ojacquemart.adventofcode.plugin.toolwindow.AocWindowFactory"
+            icon="/icons/aoc.svg"
+            id="AOC"
+            anchor="right"
+        />
+        <virtualFileSystem
+            id="Advent of Code"
+            key="AocVirtualFileSystem"
+            implementationClass="com.github.ojacquemart.adventofcode.plugin.tree.AocVirtualFileSystem"
+            physical="false"
+        />
+        <fileEditorProvider
+            implementation="com.github.ojacquemart.adventofcode.plugin.fileeditor.AocFileEditorProvider"
+        />
+        <fileIconProvider
+            implementation="com.github.ojacquemart.adventofcode.plugin.fileeditor.AocFileIconProvider"
+        />
     </extensions>
-
-    <applicationListeners>
-        <listener class="com.github.ojacquemart.adventofcodesubmitplugin.listeners.MyApplicationActivationListener" topic="com.intellij.openapi.application.ApplicationActivationListener"/>
-    </applicationListeners>
 </idea-plugin>
