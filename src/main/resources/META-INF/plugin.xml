@@ -4,7 +4,9 @@
     <name>Advent-of-Code-Submit</name>
     <vendor>Olivier Jacquemart</vendor>
 
-    <depends>com.intellij.modules.platform</depends>
+    <dependencies>
+        <plugin id="com.intellij.java"/>
+    </dependencies>
 
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow
@@ -14,6 +16,7 @@
             id="AOC"
             anchor="right"
         />
+        <!-- Tree configuration -->
         <virtualFileSystem
             id="Advent of Code"
             key="AocVirtualFileSystem"
@@ -25,6 +28,18 @@
         />
         <fileIconProvider
             implementation="com.github.ojacquemart.adventofcode.plugin.fileeditor.AocFileIconProvider"
+        />
+        <!-- Java run extension -->
+        <runConfigurationExtension
+            implementation="com.github.ojacquemart.adventofcode.plugin.execution.AocJavaRunConfigurationExtension"
+            id="aocRunConfiguration"
+        />
+        <executor
+            implementation="com.github.ojacquemart.adventofcode.plugin.execution.AocExecutor"
+            order="last,after debug"
+        />
+        <programRunner
+            implementation="com.github.ojacquemart.adventofcode.plugin.execution.AocJavaRunner"
         />
     </extensions>
 </idea-plugin>
