@@ -19,7 +19,7 @@ Whether you're a competitive solver or just enjoying the holiday coding fun, thi
 ## 📝 TODO list
 
 - [x] View the Advent of code puzzles
-- [ ] Submit your answers directly to Advent of Code
+- [x] Submit your answers directly to Advent of Code
 - [ ] Download the inputs
 
 ## 👏 Kudos

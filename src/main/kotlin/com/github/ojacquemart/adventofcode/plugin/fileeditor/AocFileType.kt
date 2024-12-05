@@ -15,7 +15,7 @@ class AocFileType : FileType, DumbAware {
 
     override fun getDescription(): String = Aoc.NAME
 
-    override fun getDefaultExtension(): String = Aoc.CODE
+    override fun getDefaultExtension(): String = Aoc.ID
 
     override fun getIcon(): Icon = Aoc.ICON
 
