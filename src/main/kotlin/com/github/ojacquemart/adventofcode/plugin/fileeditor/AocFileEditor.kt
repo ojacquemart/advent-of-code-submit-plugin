@@ -1,9 +1,8 @@
 package com.github.ojacquemart.adventofcode.plugin.fileeditor
 
+import com.github.ojacquemart.adventofcode.plugin.Aoc
 import com.github.ojacquemart.adventofcode.plugin.tree.Day
-import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.credentialStore.Credentials
-import com.intellij.credentialStore.generateServiceName
 import com.intellij.ide.passwordSafe.PasswordSafe
 import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.fileEditor.FileEditor
@@ -14,6 +13,7 @@ import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.jcef.JBCefBrowser
 import com.intellij.ui.jcef.JBCefCookie
+import org.cef.CefApp
 import org.cef.browser.CefBrowser
 import org.cef.browser.CefFrame
 import org.cef.handler.CefLoadHandlerAdapter
@@ -23,6 +23,12 @@ import java.beans.PropertyChangeListener
 import javax.swing.JComponent
 
 class AocFileEditor(private val file: Day) : FileEditor, DumbAware {
+
+    companion object {
+        const val COOKIE_NAME = "session"
+        const val USERNAME = "aoc-username"
+    }
+
     private val component: AocFileEditorComponent = AocFileEditorComponent(file)
 
     init {
@@ -35,29 +41,25 @@ class AocFileEditor(private val file: Day) : FileEditor, DumbAware {
             }
         }, browser.cefBrowser)
 
-        val credentialAttributes = createCredentialAttributes()
-        PasswordSafe.instance.getAsync(credentialAttributes)
-            .onSuccess { credentials ->
-                setCookie(credentials, browser)
-
-            }
+        setCookie(browser)
     }
 
     private fun setCookie(
-        credentials: Credentials?,
         browser: JBCefBrowser,
     ) {
-        val maybePassword = credentials?.password
-        maybePassword?.let { password ->
+        val password = PasswordSafe.instance.getPassword(Aoc.CREDENTIAL_ATTRS) ?: return
+
+        CefApp.getInstance().onInitialization {
             browser.jbCefCookieManager.setCookie(
-                "https://adventofcode.com", JBCefCookie(
-                    "session",
-                    password.toString(false),
-                    ".adventofcode.com",
+                Aoc.URL,
+                JBCefCookie(
+                    COOKIE_NAME,
+                    password,
+                    ".${Aoc.DOMAIN}",
                     "/",
                     true,
-                    false
-                ), false
+                    true
+                )
             )
         }
     }
@@ -84,9 +86,8 @@ class AocFileEditor(private val file: Day) : FileEditor, DumbAware {
     override fun getCurrentLocation(): FileEditorLocation? = null
 
     override fun dispose() {
-        val cookies: MutableList<JBCefCookie> = component.browser.jbCefCookieManager.cookies
-        cookies.removeIf { cookie: JBCefCookie -> cookie.domain != ".adventofcode.com" }
-        cookies.removeIf { cookie: JBCefCookie -> cookie.name != "session" }
+        val cookies = component.browser.jbCefCookieManager.cookies
+        cookies.removeIf { !it.isAocSession() }
 
         if (cookies.isEmpty()) {
             return
@@ -94,10 +95,12 @@ class AocFileEditor(private val file: Day) : FileEditor, DumbAware {
 
         val session = cookies[0]
 
-        val credentialAttributes = createCredentialAttributes()
-        val credentials = Credentials("", session.value)
-        PasswordSafe.instance.set(credentialAttributes, credentials)
+        val credentials = Credentials(USERNAME, session.value)
+        PasswordSafe.instance.set(Aoc.CREDENTIAL_ATTRS, credentials)
+        Aoc.State.session = credentials.password?.toString(false)
     }
+
+    private fun JBCefCookie.isAocSession(): Boolean = domain == ".${Aoc.DOMAIN}" && name == COOKIE_NAME
 
     override fun <T> getUserData(key: Key<T>): T? = null
 
@@ -105,9 +108,4 @@ class AocFileEditor(private val file: Day) : FileEditor, DumbAware {
 
     override fun getFile(): VirtualFile = file
 
-    companion object {
-        fun createCredentialAttributes(): CredentialAttributes = CredentialAttributes(
-            generateServiceName("aoc-submit", "AdventOfCode")
-        )
-    }
 }
