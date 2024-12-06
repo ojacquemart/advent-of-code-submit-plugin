@@ -21,4 +21,8 @@ object Aoc {
     const val FIRST_YEAR = 2015
 
     val CREDENTIAL_ATTRS = CredentialAttributes(generateServiceName("aoc-submit", ID))
+
+    object State {
+       var isCookieDefined = false
+    }
 }

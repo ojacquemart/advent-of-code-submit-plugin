@@ -1,5 +1,6 @@
 package com.github.ojacquemart.adventofcode.plugin.execution
 
+import com.github.ojacquemart.adventofcode.plugin.Aoc
 import com.intellij.execution.configurations.ConfigurationInfoProvider
 import com.intellij.execution.configurations.RunProfile
 import com.intellij.execution.configurations.RunnerSettings
@@ -26,7 +27,8 @@ class AocJavaRunner : DefaultJavaProgramRunner() {
 
     override fun getRunnerId(): String = RUNNER_ID
 
-    override fun canRun(executorId: String, profile: RunProfile): Boolean = executorId == AocExecutor.ID
+    override fun canRun(executorId: String, profile: RunProfile): Boolean =
+        Aoc.State.isCookieDefined && executorId == AocExecutor.ID
 
     override fun createConfigurationData(settingsProvider: ConfigurationInfoProvider): RunnerSettings = Data()
 

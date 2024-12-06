@@ -9,6 +9,9 @@
     </dependencies>
 
     <extensions defaultExtensionNs="com.intellij">
+        <!-- Startup activity -->
+        <postStartupActivity implementation="com.github.ojacquemart.adventofcode.plugin.startup.SetupActivity"/>
+        <!-- Tool window configuration -->
         <toolWindow
             secondary="true"
             factoryClass="com.github.ojacquemart.adventofcode.plugin.toolwindow.AocWindowFactory"
