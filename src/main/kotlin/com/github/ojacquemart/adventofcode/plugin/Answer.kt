@@ -20,6 +20,16 @@ data class Answer(
             private const val COMMAND_LINE_SEPARATOR = " "
             private const val PACKAGE_CLASS_SEPARATOR = "."
 
+            fun fromActionEvent(path: String): YearDay {
+                val fileName = path.substringAfterLast('/')
+                val maybeYearPath = path.substringBeforeLast('/').substringAfterLast('/')
+
+                val year = extractInt(maybeYearPath)
+                val day = extractInt(fileName)
+
+                return YearDay(if (year == 0) Year.now().value else year, day)
+            }
+
             fun fromCommandLine(commandLine: String): YearDay {
                 val maybePackageAndClass = commandLine
                     .substringAfterLast(COMMAND_LINE_SEPARATOR)
