@@ -14,6 +14,11 @@ With this plugin, you can:
 
 Whether you're a competitive solver or just enjoying the holiday coding fun, this plugin saves you time and lets you focus on solving puzzles.
 
+To submit your solutions, you need to log in into your Advent of Code account using the `AOC` tool window. The plugin will store your session cookie in the IDE's secure storage, so you don't have to log in every time you want to submit an answer.
+
+At the moment, the plugin can only submit Java or Kotlin solutions. If you're using another language, you can still use the plugin to view the puzzles and download the inputs, but you'll need to submit your answers manually.
+
+The inputs are downloaded into the `.aoc` folder in your project root. The plugin will automatically create this folder if it doesn't exist.
 <!-- Plugin description end -->
 
 ## 📝 TODO list
