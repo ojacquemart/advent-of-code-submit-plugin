@@ -11,14 +11,28 @@ class YearDayTests : BasePlatformTestCase() {
         assertEquals("2024 - Day 1", yearDay.toString())
     }
 
-    fun testFromShouldGetBothPackageAndClass() {
+    fun testFromActionEventShouldGetYearAndDay() {
+        val yearDay = Answer.YearDay.fromActionEvent("/usr/local/foobar/src/year2023/Day1.kt")
+
+        assertEquals(2023, yearDay.year)
+        assertEquals(1, yearDay.day)
+    }
+
+    fun testFromActionEventShouldGetDayAndCurrentYearIfNoYearFolder() {
+        val yearDay = Answer.YearDay.fromActionEvent("/usr/local/foobar/src/Day24.kt")
+
+        assertTrue(yearDay.year >= 2024)
+        assertEquals(24, yearDay.day)
+    }
+
+    fun testFromCommandLineShouldGetBothPackageAndClass() {
         val yearDay = Answer.YearDay.fromCommandLine("/opt/java/21 year2024.Day1")
 
         assertEquals(2024, yearDay.year)
         assertEquals(1, yearDay.day)
     }
 
-    fun testFromShouldGetCurrentYearAndDayIfNoYearPackageIsDefined() {
+    fun testFromCommandLineShouldGetCurrentYearAndDayIfNoYearPackageIsDefined() {
         val yearDay = Answer.YearDay.fromCommandLine("/opt/java/21 Day24")
 
         assertTrue(yearDay.year >= 2024)

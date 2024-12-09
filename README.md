@@ -20,7 +20,7 @@ Whether you're a competitive solver or just enjoying the holiday coding fun, thi
 
 - [x] View the Advent of code puzzles
 - [x] Submit your answers directly to Advent of Code
-- [ ] Download the inputs
+- [x] Download the inputs
 
 ## 👏 Kudos
 

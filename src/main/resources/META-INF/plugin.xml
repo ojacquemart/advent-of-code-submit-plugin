@@ -11,6 +11,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <!-- Startup activity -->
         <postStartupActivity implementation="com.github.ojacquemart.adventofcode.plugin.startup.SetupActivity"/>
+
         <!-- Tool window configuration -->
         <toolWindow
             secondary="true"
@@ -19,10 +20,12 @@
             id="AOC"
             anchor="right"
         />
+
         <!-- Notification configuration -->
         <notificationGroup
             id="aoc"
             displayType="BALLOON"/>
+
         <!-- Tree configuration -->
         <virtualFileSystem
             id="Advent of Code"
@@ -36,6 +39,7 @@
         <fileIconProvider
             implementation="com.github.ojacquemart.adventofcode.plugin.fileeditor.AocFileIconProvider"
         />
+
         <!-- Java run extension -->
         <runConfigurationExtension
             implementation="com.github.ojacquemart.adventofcode.plugin.execution.AocJavaRunConfigurationExtension"
@@ -49,4 +53,22 @@
             implementation="com.github.ojacquemart.adventofcode.plugin.execution.AocJavaRunner"
         />
     </extensions>
+
+    <actions>
+        <!-- Download input action -->
+        <action
+            id="AocDownloadInputAction"
+            class="com.github.ojacquemart.adventofcode.plugin.input.DownloadInputAction"
+            icon="/icons/aoc.svg"
+            text="AOC Download Input">
+            <add-to-group
+                group-id="ProjectViewPopupMenu"
+                anchor="last"
+            />
+            <add-to-group
+                group-id="EditorPopupMenu"
+                anchor="last"
+            />
+        </action>
+    </actions>
 </idea-plugin>
