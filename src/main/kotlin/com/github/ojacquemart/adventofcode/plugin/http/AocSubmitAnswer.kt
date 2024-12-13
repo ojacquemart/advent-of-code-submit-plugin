@@ -2,8 +2,8 @@ package com.github.ojacquemart.adventofcode.plugin.http
 
 import com.github.ojacquemart.adventofcode.plugin.Answer
 import com.github.ojacquemart.adventofcode.plugin.Aoc
+import com.github.ojacquemart.adventofcode.plugin.http.HttpClientProvider.httpClient
 import com.intellij.openapi.diagnostic.logger
-import com.intellij.platform.util.http.httpClient
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
