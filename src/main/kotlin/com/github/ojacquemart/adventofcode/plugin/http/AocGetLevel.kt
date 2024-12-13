@@ -2,7 +2,8 @@ package com.github.ojacquemart.adventofcode.plugin.http
 
 import com.github.ojacquemart.adventofcode.plugin.Answer
 import com.github.ojacquemart.adventofcode.plugin.Aoc
-import io.ktor.client.*
+import com.github.ojacquemart.adventofcode.plugin.http.HttpClientProvider.httpClient
+import com.intellij.openapi.diagnostic.logger
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import kotlinx.coroutines.runBlocking
@@ -12,14 +13,14 @@ object AocGetLevel {
     private const val DONE_PATTERN = "They provide two gold stars"
     private const val PART_1_PATTERN = "It provides one gold star"
 
-    fun getLevel(yearDay: Answer.YearDay): Answer.Level? = runBlocking {
-        val body = HttpClient()
-            .request("${Aoc.URL}/${yearDay.year}/day/${yearDay.day}") {
-                headers {
-                    append("Cookie", "session=${Aoc.State.session}")
-                }
-            }.bodyAsText()
+    private val LOGGER = logger<AocGetLevel>()
 
+    fun getLevel(yearDay: Answer.YearDay): Answer.Level? = runBlocking {
+        LOGGER.debug("Getting level for $yearDay")
+
+        val body = httpClient
+            .request("${Aoc.URL}/${yearDay.year}/day/${yearDay.day}")
+            .bodyAsText()
 
         resolveLevel(body)
     }

@@ -2,7 +2,8 @@ package com.github.ojacquemart.adventofcode.plugin.http
 
 import com.github.ojacquemart.adventofcode.plugin.Answer
 import com.github.ojacquemart.adventofcode.plugin.Aoc
-import io.ktor.client.*
+import com.intellij.openapi.diagnostic.logger
+import com.intellij.platform.util.http.httpClient
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -15,12 +16,15 @@ object AocSubmitAnswer {
     private const val MESSAGE_SELECTOR = "main article p"
     private const val STRIP_RETURN_PART = "["
 
+    private val LOGGER = logger<AocSubmitAnswer>()
+
     fun submit(answer: Answer): Answer.Feedback = runBlocking {
-        val body = HttpClient()
+        LOGGER.debug("Submitting answer ${answer.yearDay} - level ${answer.level}")
+
+        val body = httpClient
             .post("${Aoc.URL}/${answer.yearDay.year}/day/${answer.yearDay.day}/answer") {
                 headers {
                     append("Content-Type", ContentType.Application.FormUrlEncoded)
-                    append("Cookie", "session=${Aoc.State.session}")
                 }
                 setBody("level=${answer.level}&answer=${answer.answer}")
             }.bodyAsText()

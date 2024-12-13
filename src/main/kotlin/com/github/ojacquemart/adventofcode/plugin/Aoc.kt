@@ -1,6 +1,7 @@
 package com.github.ojacquemart.adventofcode.plugin
 
 import com.intellij.credentialStore.CredentialAttributes
+import com.intellij.credentialStore.OneTimeString
 import com.intellij.credentialStore.generateServiceName
 import com.intellij.openapi.util.IconLoader.getIcon
 import java.time.ZoneId
@@ -23,8 +24,11 @@ object Aoc {
     val CREDENTIAL_ATTRS = CredentialAttributes(generateServiceName("aoc-submit", ID))
 
     object State {
-        var session: String? = null
+        var isSessionSet: Boolean = false
 
-        fun isSessionSet() = session != null
+        fun changeSessionSet(session: OneTimeString?) {
+            isSessionSet = session != null
+        }
     }
+
 }
