@@ -65,7 +65,7 @@ class AocFileEditor(private val file: Day) : FileEditor, CefCookieVisitor, DumbA
         when (cookie.name) {
             SESSION_COOKIE -> {
                 val credentials = Credentials(USERNAME, cookie.value)
-                getCredentialsManager().init(credentials)
+                getCredentialsManager().update(credentials)
 
                 false
             }

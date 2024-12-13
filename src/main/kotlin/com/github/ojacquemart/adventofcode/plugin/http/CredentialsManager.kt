@@ -26,9 +26,20 @@ class CredentialsManager(
         }
     }
 
-    fun init(credentials: Credentials?) {
+    private fun init(credentials: Credentials?) {
         LOGGER.debug("Init credentials")
 
+        updateState(credentials)
+    }
+
+    fun update(credentials: Credentials) {
+        LOGGER.debug("Update credentials")
+
+        PasswordSafe.instance.set(Aoc.CREDENTIAL_ATTRS, credentials)
+        updateState(credentials)
+    }
+
+    private fun updateState(credentials: Credentials?) {
         HttpClientProvider.configure(credentials)
         Aoc.State.changeSessionSet(credentials?.password)
     }
@@ -41,7 +52,7 @@ class CredentialsManager(
         Aoc.State.changeSessionSet(null)
     }
 
-    suspend fun getCredentials(): Credentials? =
+    private suspend fun getCredentials(): Credentials? =
         PasswordSafe.instance.getAsync(Aoc.CREDENTIAL_ATTRS).await()
 
 }

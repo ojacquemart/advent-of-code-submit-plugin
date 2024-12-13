@@ -1,6 +1,5 @@
 package com.github.ojacquemart.adventofcode.plugin.http
 
-import com.github.ojacquemart.adventofcode.plugin.Aoc
 import com.intellij.credentialStore.Credentials
 import com.intellij.openapi.diagnostic.logger
 import io.ktor.client.*
@@ -15,17 +14,15 @@ object HttpClientProvider {
     lateinit var httpClient: HttpClient
 
     fun configure(credentials: Credentials?) {
-        credentials?.let {
-            configureSession(it)
-        } ?: default()
+        credentials?.let(::configureSession) ?: default()
     }
 
-    private fun configureSession(it: Credentials) {
+    private fun configureSession(credentials: Credentials) {
         LOGGER.debug("Configuring HTTP client with session")
 
         httpClient = HttpClient().config {
             defaultRequest {
-                header("Cookie", "$SESSION_COOKIE=${it.password?.toString(false)}")
+                header("Cookie", "$SESSION_COOKIE=${credentials.password?.toString(false)}")
             }
         }
     }
