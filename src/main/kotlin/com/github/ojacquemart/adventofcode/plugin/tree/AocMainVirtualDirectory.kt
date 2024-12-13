@@ -1,7 +1,7 @@
 package com.github.ojacquemart.adventofcode.plugin.tree
 
 import com.github.ojacquemart.adventofcode.plugin.Aoc
-import com.github.ojacquemart.adventofcode.plugin.data.CalendarDataProvider
+import com.github.ojacquemart.adventofcode.plugin.calendar.CalendarDataProvider
 import com.intellij.openapi.vfs.VirtualFileSystem
 import java.util.*
 import javax.swing.tree.TreeNode

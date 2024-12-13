@@ -1,6 +1,6 @@
 package com.github.ojacquemart.adventofcode.plugin.tree
 
-import com.github.ojacquemart.adventofcode.plugin.data.CalendarDataProvider
+import com.github.ojacquemart.adventofcode.plugin.calendar.CalendarDataProvider
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileListener
 import com.intellij.openapi.vfs.VirtualFileSystem

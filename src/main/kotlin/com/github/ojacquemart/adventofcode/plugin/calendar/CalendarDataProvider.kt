@@ -1,4 +1,4 @@
-package com.github.ojacquemart.adventofcode.plugin.data
+package com.github.ojacquemart.adventofcode.plugin.calendar
 
 import com.github.ojacquemart.adventofcode.plugin.Aoc
 import java.time.LocalDateTime

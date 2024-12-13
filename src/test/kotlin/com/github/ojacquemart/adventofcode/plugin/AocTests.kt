@@ -1,6 +1,6 @@
 package com.github.ojacquemart.adventofcode.plugin
 
-import com.github.ojacquemart.adventofcode.plugin.data.CalendarDataProvider
+import com.github.ojacquemart.adventofcode.plugin.calendar.CalendarDataProvider
 import com.intellij.ide.highlighter.XmlFileType
 import com.intellij.psi.xml.XmlFile
 import com.intellij.testFramework.TestDataPath
