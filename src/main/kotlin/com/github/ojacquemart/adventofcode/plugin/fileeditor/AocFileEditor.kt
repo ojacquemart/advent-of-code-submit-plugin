@@ -1,10 +1,12 @@
 package com.github.ojacquemart.adventofcode.plugin.fileeditor
 
 import com.github.ojacquemart.adventofcode.plugin.Aoc
+import com.github.ojacquemart.adventofcode.plugin.http.CredentialsManager
+import com.github.ojacquemart.adventofcode.plugin.http.HttpClientProvider.SESSION_COOKIE
 import com.github.ojacquemart.adventofcode.plugin.tree.Day
 import com.intellij.credentialStore.Credentials
-import com.intellij.ide.passwordSafe.PasswordSafe
 import com.intellij.ide.util.PropertiesComponent
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorLocation
 import com.intellij.openapi.fileEditor.FileEditorState
@@ -12,20 +14,22 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.jcef.JBCefBrowser
-import com.intellij.ui.jcef.JBCefCookie
-import org.cef.CefApp
+import io.ktor.http.*
 import org.cef.browser.CefBrowser
 import org.cef.browser.CefFrame
+import org.cef.callback.CefCookieVisitor
 import org.cef.handler.CefLoadHandlerAdapter
+import org.cef.misc.BoolRef
+import org.cef.network.CefCookie
+import org.cef.network.CefCookieManager
 import org.cef.network.CefRequest.TransitionType
 import org.jetbrains.annotations.Nls
 import java.beans.PropertyChangeListener
 import javax.swing.JComponent
 
-class AocFileEditor(private val file: Day) : FileEditor, DumbAware {
+class AocFileEditor(private val file: Day) : FileEditor, CefCookieVisitor, DumbAware {
 
     companion object {
-        const val COOKIE_NAME = "session"
         const val USERNAME = "aoc-username"
     }
 
@@ -34,35 +38,46 @@ class AocFileEditor(private val file: Day) : FileEditor, DumbAware {
     init {
         val browser: JBCefBrowser = component.browser
         browser.jbCefClient.addLoadHandler(object : CefLoadHandlerAdapter() {
+            override fun onLoadEnd(browser: CefBrowser?, frame: CefFrame?, httpStatusCode: Int) {
+                super.onLoadEnd(browser, frame, httpStatusCode)
+
+                if (httpStatusCode == HttpStatusCode.OK.value) {
+                    visitCookies()
+                }
+            }
+
             override fun onLoadStart(cefBrowser: CefBrowser, frame: CefFrame, transitionType: TransitionType) {
                 val properties = PropertiesComponent.getInstance()
                 val zoom = properties.getFloat("zoom", 0.0f)
                 cefBrowser.zoomLevel = zoom.toDouble()
             }
         }, browser.cefBrowser)
-
-        setCookie(browser)
     }
 
-    private fun setCookie(
-        browser: JBCefBrowser,
-    ) {
-        val password = PasswordSafe.instance.getPassword(Aoc.CREDENTIAL_ATTRS) ?: return
+    private fun visitCookies() {
+        val credentialsManager = getCredentialsManager()
+        credentialsManager.clear()
 
-        CefApp.getInstance().onInitialization {
-            browser.jbCefCookieManager.setCookie(
-                Aoc.URL,
-                JBCefCookie(
-                    COOKIE_NAME,
-                    password,
-                    ".${Aoc.DOMAIN}",
-                    "/",
-                    true,
-                    true
-                )
-            )
+        getCookieManager().visitUrlCookies(Aoc.URL, true, this)
+    }
+
+    override fun visit(cookie: CefCookie, count: Int, total: Int, delete: BoolRef) =
+        when (cookie.name) {
+            SESSION_COOKIE -> {
+                val credentials = Credentials(USERNAME, cookie.value)
+                getCredentialsManager().init(credentials)
+
+                false
+            }
+
+            else -> true
         }
-    }
+
+    private fun getCookieManager(): CefCookieManager =
+        CefCookieManager.getGlobalManager()
+
+    private fun getCredentialsManager(): CredentialsManager =
+        ApplicationManager.getApplication().getService(CredentialsManager::class.java)
 
     override fun getComponent(): JComponent = component
 
@@ -86,21 +101,7 @@ class AocFileEditor(private val file: Day) : FileEditor, DumbAware {
     override fun getCurrentLocation(): FileEditorLocation? = null
 
     override fun dispose() {
-        val cookies = component.browser.jbCefCookieManager.cookies
-        cookies.removeIf { !it.isAocSession() }
-
-        if (cookies.isEmpty()) {
-            return
-        }
-
-        val session = cookies[0]
-
-        val credentials = Credentials(USERNAME, session.value)
-        PasswordSafe.instance.set(Aoc.CREDENTIAL_ATTRS, credentials)
-        Aoc.State.session = credentials.password?.toString(false)
     }
-
-    private fun JBCefCookie.isAocSession(): Boolean = domain == ".${Aoc.DOMAIN}" && name == COOKIE_NAME
 
     override fun <T> getUserData(key: Key<T>): T? = null
 

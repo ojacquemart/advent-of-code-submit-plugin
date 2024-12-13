@@ -28,7 +28,7 @@ class AocJavaRunner : DefaultJavaProgramRunner() {
     override fun getRunnerId(): String = RUNNER_ID
 
     override fun canRun(executorId: String, profile: RunProfile): Boolean =
-        Aoc.State.isSessionSet() && executorId == AocExecutor.ID
+        Aoc.State.isSessionSet && executorId == AocExecutor.ID
 
     override fun createConfigurationData(settingsProvider: ConfigurationInfoProvider): RunnerSettings = Data()
 
