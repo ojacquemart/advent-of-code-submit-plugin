@@ -9,6 +9,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.treeStructure.Tree
 import java.awt.BorderLayout
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
 import javax.swing.JComponent
 import javax.swing.JPanel
 
@@ -20,11 +22,11 @@ class AocViewCreator(
         val tree = Tree(AocVirtualFileSystem())
         tree.isRootVisible = false
         tree.cellRenderer = AocTreeCellRenderer()
-        tree.addTreeSelectionListener {
-            (it.path.lastPathComponent as? Day)
-                ?.takeIf { day -> day.canBeSelected() }
-                ?.let { day -> openDay(day) }
-        }
+        tree.addMouseListener(object : MouseAdapter() {
+            override fun mouseClicked(mouseEvent: MouseEvent) {
+                tree.selectedDay?.let(::openDay)
+            }
+        })
 
         val panel = JPanel(BorderLayout())
         panel.add(JBScrollPane(tree), BorderLayout.CENTER)
@@ -37,5 +39,10 @@ class AocViewCreator(
 
         FileEditorManager.getInstance(project).openFile(day, true)
     }
+
+    val Tree.selectedDay: Day?
+        get() =
+            (this.selectionPath?.lastPathComponent as? Day)
+                ?.takeIf { day -> day.canBeSelected() }
 
 }
