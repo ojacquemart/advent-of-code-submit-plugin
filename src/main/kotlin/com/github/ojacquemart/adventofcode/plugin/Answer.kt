@@ -10,8 +10,8 @@ data class Answer(
 ) {
 
     data class YearDay(
-        val year: Int,
-        val day: Int,
+        val year: Int? = Year.now().value,
+        val day: Int?,
     ) {
 
         override fun toString(): String = "$year - Day $day"
@@ -20,14 +20,13 @@ data class Answer(
             private const val COMMAND_LINE_SEPARATOR = " "
             private const val PACKAGE_CLASS_SEPARATOR = "."
 
-            fun fromActionEvent(path: String): YearDay {
+            fun fromActionEvent(path: String): YearDay? {
                 val fileName = path.substringAfterLast('/')
                 val maybeYearPath = path.substringBeforeLast('/').substringAfterLast('/')
 
-                val year = extractInt(maybeYearPath)
-                val day = extractInt(fileName)
-
-                return YearDay(if (year == 0) Year.now().value else year, day)
+                return extractInt(fileName)?.let { day ->
+                    YearDay(extractInt(maybeYearPath) ?: Year.now().value, day)
+                }
             }
 
             fun fromCommandLine(commandLine: String): YearDay {
@@ -43,11 +42,11 @@ data class Answer(
                 }
             }
 
-            private fun extractInt(value: String): Int {
+            private fun extractInt(value: String): Int? {
                 val regex = Regex("""\d+""")
                 val matchResult = regex.find(value)
 
-                return matchResult?.value?.toInt() ?: 0
+                return matchResult?.value?.toInt()
             }
 
         }
