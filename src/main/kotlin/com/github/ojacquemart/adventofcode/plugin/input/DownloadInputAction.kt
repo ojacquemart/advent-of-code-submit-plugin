@@ -20,10 +20,13 @@ class DownloadInputAction : AnAction() {
     companion object {
         private const val INPUT_DIRECTORY = ".aoc"
 
-        private const val NOTIFICATION_TITLE = "AOC Download Input"
+        private const val NOTIFICATION_TITLE = "Download AOC Input"
     }
 
-    override fun actionPerformed(event: AnActionEvent) {
+    override fun actionPerformed(event: AnActionEvent) =
+        if (!Aoc.State.isSessionSet) notifyNoSession() else performAction(event)
+
+    private fun performAction(event: AnActionEvent) {
         val file = event.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
         val filePath = file.canonicalPath ?: return
 
@@ -62,6 +65,17 @@ class DownloadInputAction : AnAction() {
                 "$INPUT_DIRECTORY/${yearDay.year}"
             )
         }
+    }
+
+    private fun notifyNoSession() {
+        NotificationGroupManager.getInstance()
+            .getNotificationGroup(Aoc.ID)
+            .createNotification(
+                NOTIFICATION_TITLE,
+                "You are not logged in. Please log in to the Advent of Code website using the AOC view.",
+                NotificationType.INFORMATION
+            )
+            .notify(null)
     }
 
     private fun notifyExistingFile(yearDay: Answer.YearDay) {

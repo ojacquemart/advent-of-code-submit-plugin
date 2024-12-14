@@ -60,7 +60,7 @@
             id="AocDownloadInputAction"
             class="com.github.ojacquemart.adventofcode.plugin.input.DownloadInputAction"
             icon="/icons/aoc.svg"
-            text="AOC Download Input">
+            text="Download AOC Input">
             <add-to-group
                 group-id="ProjectViewPopupMenu"
                 anchor="last"
