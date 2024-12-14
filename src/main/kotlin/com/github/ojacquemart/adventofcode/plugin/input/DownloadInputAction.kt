@@ -5,6 +5,7 @@ import com.github.ojacquemart.adventofcode.plugin.Aoc
 import com.github.ojacquemart.adventofcode.plugin.http.AocDownloadInput
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
@@ -20,8 +21,28 @@ class DownloadInputAction : AnAction() {
     companion object {
         private const val INPUT_DIRECTORY = ".aoc"
 
-        private const val NOTIFICATION_TITLE = "Download AOC Input"
+        private const val NOTIFICATION_TITLE = "Download Input"
+
+        private val SUPPORTED_FILE_TYPES = setOf(
+            "kt",
+            "java",
+        )
     }
+
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
+
+    override fun update(event: AnActionEvent) {
+        event.presentation.isVisible = isActionApplicable(event)
+    }
+
+    private fun isActionApplicable(e: AnActionEvent): Boolean {
+        val file = e.dataContext.getData(CommonDataKeys.VIRTUAL_FILE)
+
+        return file?.let { isSupportedFileType(it) } ?: false
+    }
+
+    private fun isSupportedFileType(file: VirtualFile): Boolean =
+        SUPPORTED_FILE_TYPES.contains(file.fileType.defaultExtension)
 
     override fun actionPerformed(event: AnActionEvent) =
         if (!Aoc.State.isSessionSet) notifyNoSession() else performAction(event)
@@ -30,7 +51,7 @@ class DownloadInputAction : AnAction() {
         val file = event.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
         val filePath = file.canonicalPath ?: return
 
-        val yearDay = Answer.YearDay.fromActionEvent(filePath)
+        val yearDay = Answer.YearDay.fromActionEvent(filePath) ?: return
 
         val project = event.getData(CommonDataKeys.PROJECT) ?: return
 

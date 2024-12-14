@@ -11,18 +11,24 @@ class YearDayTests : BasePlatformTestCase() {
         assertEquals("2024 - Day 1", yearDay.toString())
     }
 
+    fun testFromActionEventShouldNotGetYearAndDayIfFilePathIsInvalid() {
+        val yearDay = Answer.YearDay.fromActionEvent("/usr/local/foobar/foo/bar/qix")
+
+        assertNull(yearDay)
+    }
+
     fun testFromActionEventShouldGetYearAndDay() {
         val yearDay = Answer.YearDay.fromActionEvent("/usr/local/foobar/src/year2023/Day1.kt")
 
-        assertEquals(2023, yearDay.year)
-        assertEquals(1, yearDay.day)
+        assertEquals(2023, yearDay?.year)
+        assertEquals(1, yearDay?.day)
     }
 
     fun testFromActionEventShouldGetDayAndCurrentYearIfNoYearFolder() {
         val yearDay = Answer.YearDay.fromActionEvent("/usr/local/foobar/src/Day24.kt")
 
-        assertTrue(yearDay.year >= 2024)
-        assertEquals(24, yearDay.day)
+        assertTrue((yearDay?.year ?: -1) >= 2024)
+        assertEquals(24, yearDay?.day)
     }
 
     fun testFromCommandLineShouldGetBothPackageAndClass() {
@@ -35,7 +41,7 @@ class YearDayTests : BasePlatformTestCase() {
     fun testFromCommandLineShouldGetCurrentYearAndDayIfNoYearPackageIsDefined() {
         val yearDay = Answer.YearDay.fromCommandLine("/opt/java/21 Day24")
 
-        assertTrue(yearDay.year >= 2024)
+        assertTrue((yearDay.year ?: -1) >= 2024)
         assertEquals(24, yearDay.day)
     }
 
