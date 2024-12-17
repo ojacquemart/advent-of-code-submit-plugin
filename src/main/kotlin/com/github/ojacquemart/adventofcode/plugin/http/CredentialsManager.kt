@@ -40,7 +40,6 @@ class CredentialsManager(
     }
 
     private fun updateState(credentials: Credentials?) {
-        HttpClientProvider.configure(credentials)
         Aoc.State.changeSessionSet(credentials?.password)
     }
 
@@ -48,7 +47,6 @@ class CredentialsManager(
         LOGGER.debug("Clear credentials")
 
         PasswordSafe.instance.set(Aoc.CREDENTIAL_ATTRS, null)
-        HttpClientProvider.configure(null)
         Aoc.State.changeSessionSet(null)
     }
 

@@ -19,7 +19,7 @@ object AocGetLevel {
         LOGGER.debug("Getting level for $yearDay")
 
         val body = httpClient
-            .request("${Aoc.URL}/${yearDay.year}/day/${yearDay.day}")
+            .request("${yearDay.year}/day/${yearDay.day}")
             .bodyAsText()
 
         resolveLevel(body)

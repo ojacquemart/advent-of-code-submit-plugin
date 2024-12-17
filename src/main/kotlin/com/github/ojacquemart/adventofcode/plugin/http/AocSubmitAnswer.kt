@@ -22,7 +22,7 @@ object AocSubmitAnswer {
         LOGGER.debug("Submitting answer ${answer.yearDay} - level ${answer.level}")
 
         val body = httpClient
-            .post("${Aoc.URL}/${answer.yearDay.year}/day/${answer.yearDay.day}/answer") {
+            .post("${answer.yearDay.year}/day/${answer.yearDay.day}/answer") {
                 headers {
                     append("Content-Type", ContentType.Application.FormUrlEncoded)
                 }

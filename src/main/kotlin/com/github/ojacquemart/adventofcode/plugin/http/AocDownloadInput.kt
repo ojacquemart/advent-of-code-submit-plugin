@@ -1,7 +1,6 @@
 package com.github.ojacquemart.adventofcode.plugin.http
 
 import com.github.ojacquemart.adventofcode.plugin.Answer
-import com.github.ojacquemart.adventofcode.plugin.Aoc
 import com.github.ojacquemart.adventofcode.plugin.http.HttpClientProvider.httpClient
 import com.intellij.openapi.diagnostic.logger
 import io.ktor.client.request.*
@@ -16,7 +15,7 @@ object AocDownloadInput {
         LOGGER.debug("Downloading input for $yearDay")
 
         httpClient
-            .request("${Aoc.URL}/${yearDay.year}/day/${yearDay.day}/input")
+            .request("${yearDay.year}/day/${yearDay.day}/input")
             .bodyAsText()
     }
 
