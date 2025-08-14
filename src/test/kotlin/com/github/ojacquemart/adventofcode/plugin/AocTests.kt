@@ -6,6 +6,8 @@ import com.intellij.psi.xml.XmlFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.PsiErrorElementUtil
+import java.time.LocalDate
+import java.time.Month
 import java.time.Year
 
 @TestDataPath("\$CONTENT_ROOT/src/test/testData")
@@ -34,7 +36,7 @@ class AocTests : BasePlatformTestCase() {
     fun testCalendarServiceGetYears() {
         val years = CalendarDataProvider.getYears()
 
-        val currentYear = Year.now().value
+        val currentYear = if (LocalDate.now().month == Month.DECEMBER) Year.now().value else Year.now().value - 1
         assertEquals(currentYear, years.first().year)
         assertEquals(2015, years.last().year)
     }
