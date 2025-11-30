@@ -19,12 +19,17 @@ object CalendarDataProvider {
             year == adventYear && isDecember && day > currentDay
         }
 
-        return (adventYear downTo Aoc.FIRST_YEAR)
-            .map { year ->
-                val days = Aoc.DAYS.map { day -> DayHolder(day, isDayInFuture(year, day)) }
-
-                YearHolder(year, days)
+        val getDays = { year: Int ->
+            val days = when {
+                year >= Aoc.FIRST_YEAR_12_DAYS -> Aoc.DAYS_12_DAYS_YEAR
+                else -> Aoc.DAYS
             }
+
+            days.map { day -> DayHolder(day, isDayInFuture(year, day)) }
+        }
+
+        return (adventYear downTo Aoc.FIRST_YEAR)
+            .map { year -> YearHolder(year, getDays(year)) }
     }
 
 }
