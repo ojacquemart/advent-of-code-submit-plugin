@@ -3,11 +3,11 @@ package com.github.ojacquemart.adventofcode.plugin.http
 import com.github.ojacquemart.adventofcode.plugin.Aoc
 import com.intellij.credentialStore.Credentials
 import com.intellij.ide.passwordSafe.PasswordSafe
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import org.jetbrains.concurrency.await
 
 @Service
 class CredentialsManager(
@@ -16,6 +16,11 @@ class CredentialsManager(
 
     companion object {
         private val LOGGER = logger<CredentialsManager>()
+
+        @JvmStatic
+        val instance: CredentialsManager
+            get() = ApplicationManager.getApplication().getService(CredentialsManager::class.java)
+
     }
 
     fun init() {
@@ -50,7 +55,11 @@ class CredentialsManager(
         Aoc.State.changeSessionSet(null)
     }
 
-    private suspend fun getCredentials(): Credentials? =
-        PasswordSafe.instance.getAsync(Aoc.CREDENTIAL_ATTRS).await()
+    fun getCredentials(): Credentials? =
+        PasswordSafe.instance.get(Aoc.CREDENTIAL_ATTRS)
+
+    // TODO try to use again getAsync after resolution of https://youtrack.jetbrains.com/issue/IJPL-217715/CredentialStoregetAsync-Missing-ApiStatus.Experimental-annotation-in-implementing-classes
+    //private suspend fun getCredentials(): Credentials? =
+    //  PasswordSafe.instance.getAsync(Aoc.CREDENTIAL_ATTRS).await()
 
 }

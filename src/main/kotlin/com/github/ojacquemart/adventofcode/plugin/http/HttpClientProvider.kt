@@ -2,17 +2,15 @@ package com.github.ojacquemart.adventofcode.plugin.http
 
 import com.github.ojacquemart.adventofcode.plugin.Aoc
 import com.intellij.credentialStore.Credentials
-import com.intellij.ide.passwordSafe.PasswordSafe
 import com.intellij.openapi.diagnostic.logger
 import io.ktor.client.*
 import io.ktor.client.plugins.*
 import io.ktor.client.request.*
 import kotlinx.coroutines.runBlocking
-import org.jetbrains.concurrency.await
 
 object HttpClientProvider {
 
-    private val LOGGER = logger<CredentialsManager>()
+    private val LOGGER = logger<HttpClientProvider>()
 
     private const val COOKIE_HEADER = "Cookie"
 
@@ -20,7 +18,7 @@ object HttpClientProvider {
 
     val httpClient: HttpClient
         get() = runBlocking {
-            when (val credentials = PasswordSafe.instance.getAsync(Aoc.CREDENTIAL_ATTRS).await()) {
+            when (val credentials = CredentialsManager.instance.getCredentials()) {
                 is Credentials -> configure(credentials)
                 else -> default()
             }

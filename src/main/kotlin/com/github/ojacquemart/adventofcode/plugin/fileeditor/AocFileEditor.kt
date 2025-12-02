@@ -6,7 +6,6 @@ import com.github.ojacquemart.adventofcode.plugin.http.HttpClientProvider.SESSIO
 import com.github.ojacquemart.adventofcode.plugin.tree.Day
 import com.intellij.credentialStore.Credentials
 import com.intellij.ide.util.PropertiesComponent
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorLocation
 import com.intellij.openapi.fileEditor.FileEditorState
@@ -55,8 +54,7 @@ class AocFileEditor(private val file: Day) : FileEditor, CefCookieVisitor, DumbA
     }
 
     private fun visitCookies() {
-        val credentialsManager = getCredentialsManager()
-        credentialsManager.clear()
+        CredentialsManager.instance.clear()
 
         getCookieManager().visitUrlCookies(Aoc.URL, true, this)
     }
@@ -65,7 +63,7 @@ class AocFileEditor(private val file: Day) : FileEditor, CefCookieVisitor, DumbA
         when (cookie.name) {
             SESSION_COOKIE -> {
                 val credentials = Credentials(USERNAME, cookie.value)
-                getCredentialsManager().update(credentials)
+                CredentialsManager.instance.update(credentials)
 
                 false
             }
@@ -75,9 +73,6 @@ class AocFileEditor(private val file: Day) : FileEditor, CefCookieVisitor, DumbA
 
     private fun getCookieManager(): CefCookieManager =
         CefCookieManager.getGlobalManager()
-
-    private fun getCredentialsManager(): CredentialsManager =
-        ApplicationManager.getApplication().getService(CredentialsManager::class.java)
 
     override fun getComponent(): JComponent = component
 
